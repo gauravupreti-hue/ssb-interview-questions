@@ -1,0 +1,320 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSB Interview Q&A Widget</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f4f6f8;
+    padding:20px;
+}
+
+.widget{
+    max-width:1000px;
+    margin:auto;
+}
+
+.scene{
+    background:#fff;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+/* ROWS */
+
+.row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:30px;
+    margin-bottom:30px;
+}
+
+/* IMAGES */
+
+.character{
+    width:260px;
+    max-width:100%;
+}
+
+.character img{
+    width:100%;
+    display:block;
+}
+
+/* SPEECH BOXES */
+
+.speech{
+    position:relative;
+    background:#fff;
+    border:2px solid #222;
+    border-radius:18px;
+    padding:18px;
+    width:420px;
+    min-height:170px;
+    transition:.3s;
+}
+
+.speech h4{
+    color:#0f4fb7;
+    margin-bottom:12px;
+    font-size:18px;
+}
+
+.speech p{
+    line-height:1.7;
+    font-size:16px;
+}
+
+/* Tail for interviewer */
+
+.question::before{
+    content:"";
+    position:absolute;
+    left:-14px;
+    top:90px;
+    width:20px;
+    height:20px;
+    background:#fff;
+    border-left:2px solid #222;
+    border-bottom:2px solid #222;
+    transform:rotate(45deg);
+}
+
+/* Tail for candidate */
+
+.answer::before{
+    content:"";
+    position:absolute;
+    right:-14px;
+    top:90px;
+    width:20px;
+    height:20px;
+    background:#fff;
+    border-right:2px solid #222;
+    border-top:2px solid #222;
+    transform:rotate(45deg);
+}
+
+/* Pagination */
+
+.pagination{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:25px;
+}
+
+.page-btn{
+    width:44px;
+    height:44px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#dbe3f3;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.page-btn:hover{
+    background:#bfcbe6;
+}
+
+.page-btn.active{
+    background:#1d4fb8;
+    color:#fff;
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+    .row{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .row.reverse{
+        flex-direction:column-reverse;
+    }
+
+    .character{
+        width:200px;
+    }
+
+    .speech{
+        width:100%;
+        min-height:auto;
+    }
+
+    .speech h4{
+        font-size:16px;
+    }
+
+    .speech p{
+        font-size:14px;
+    }
+
+    .question::before,
+    .answer::before{
+        display:none;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="widget">
+
+    <div class="scene">
+
+        <!-- QUESTION ROW -->
+
+        <div class="row">
+
+            <div class="character">
+                <img src="https://cdn.testbook.com/1782216155315-Interviewer.png/1782216156.png" alt="Interviewer">
+            </div>
+
+            <div class="speech question">
+                <h4>Interviewer</h4>
+                <p id="questionText"></p>
+            </div>
+
+        </div>
+
+        <!-- ANSWER ROW -->
+
+        <div class="row reverse">
+
+            <div class="speech answer">
+                <h4>Candidate</h4>
+                <p id="answerText"></p>
+            </div>
+
+            <div class="character">
+                <img src="https://cdn.testbook.com/1782216400576-Interviewee.png/1782216403.png" alt="Candidate">
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PAGINATION -->
+
+    <div class="pagination" id="pagination"></div>
+
+</div>
+
+<script>
+
+const qaData = [
+
+{
+q:"Why do you think education matters for an officer in the Armed Forces?",
+a:"Education builds reasoning, awareness, and decision-making ability. An officer must understand people, situations, and technology quickly, making balanced and effective decisions."
+},
+
+{
+q:"Which subject did you enjoy most in school or college, and why?",
+a:"I enjoyed the subject that helped me think logically and apply concepts to real situations. It improved my analytical ability and made me more disciplined in solving problems."
+},
+
+{
+q:"What is the difference between knowledge and wisdom?",
+a:"Knowledge is knowing facts and information, while wisdom is knowing how and when to use that knowledge correctly. An officer must apply knowledge with judgment and responsibility."
+},
+
+{
+q:"How has your education prepared you for leadership?",
+a:"My education taught me discipline, consistency, teamwork, and accountability. Group work and projects helped me understand how to manage responsibilities effectively."
+},
+
+{
+q:"What is the role of science and technology in modern warfare?",
+a:"Science and technology improve surveillance, communication, navigation, logistics, and precision. They make operations faster, safer, and more effective."
+},
+
+{
+q:"Why is geography important for a defence officer?",
+a:"Geography helps an officer understand terrain, climate, borders, routes, and strategic locations. This knowledge supports planning and execution of operations."
+},
+
+{
+q:"What are the advantages and disadvantages of social media for youth?",
+a:"Social media helps youth stay informed and connected. However, it can also lead to distraction, misinformation, and reduced focus if not used responsibly."
+},
+
+{
+q:"How do current affairs influence national security?",
+a:"Current affairs shape foreign policy, border issues, economic stability, and public awareness. Officers should stay informed to make better decisions."
+},
+
+{
+q:"What is your opinion on the importance of ethics in public service?",
+a:"Ethics build trust, fairness, and accountability. Integrity must guide every decision because authority without ethics can be misused."
+},
+
+{
+q:"How can India balance economic development and national security?",
+a:"India can balance both through investments in infrastructure, technology, industry, defence preparedness, and border security. Development and security should complement each other."
+}
+
+];
+
+const questionText = document.getElementById("questionText");
+const answerText = document.getElementById("answerText");
+const pagination = document.getElementById("pagination");
+
+function loadQuestion(index){
+
+    questionText.textContent = qaData[index].q;
+    answerText.textContent = qaData[index].a;
+
+    document.querySelectorAll(".page-btn").forEach(btn=>{
+        btn.classList.remove("active");
+    });
+
+    document.getElementById("btn"+index).classList.add("active");
+}
+
+qaData.forEach((item,index)=>{
+
+    const btn = document.createElement("button");
+
+    btn.innerText = index + 1;
+    btn.className = "page-btn";
+    btn.id = "btn"+index;
+
+    if(index===0){
+        btn.classList.add("active");
+    }
+
+    btn.addEventListener("click",()=>{
+        loadQuestion(index);
+    });
+
+    pagination.appendChild(btn);
+
+});
+
+loadQuestion(0);
+
+</script>
+
+</body>
+</html>
